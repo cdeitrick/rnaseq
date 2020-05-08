@@ -12,11 +12,12 @@ from statsmodels.stats.multicomp import MultiComparison
 import argparse
 import matplotlib.patches as mpatches
 
+
 def assign_colors():
 	pass
 
 
-def generate_palette(table: pandas.DataFrame) -> pandas.Series:
+def generate_palette(table: pandas.DataFrame) -> Tuple[pandas.Series, Dict[str, str]]:
 	strains = table['strain'].unique()
 	not_significant_color = "#777777"
 	colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"]
@@ -28,15 +29,15 @@ def generate_palette(table: pandas.DataFrame) -> pandas.Series:
 
 	return category, palette
 
-def volcanoplot(table:pandas.DataFrame, ax:plt.Axes = None):
 
+def volcanoplot(table: pandas.DataFrame, ax: plt.Axes = None):
 	column_label_x = 'log2FoldChange'
 	column_label_y = '-log10(pvalue)'
 	label_not_significant = 'not significant'
 	table['category'], palette = generate_palette(table)
-	table['color']  =table['category'].apply(lambda s: palette[s])
+	table['color'] = table['category'].apply(lambda s: palette[s])
 	if ax is None:
-		fig, ax = plt.subplots(figsize = (12,10))
+		fig, ax = plt.subplots(figsize = (12, 10))
 
 	table_significant = table[table['category'] != label_not_significant]
 	table_notsignificant = table[table['category'] == label_not_significant]
@@ -60,12 +61,12 @@ def volcanoplot(table:pandas.DataFrame, ax:plt.Axes = None):
 	axis_scale = 1.05
 	ax.set_xlabel(column_label_x, fontdict = {'fontsize': 24})
 	ax.set_ylabel(column_label_y, fontdict = {'fontsize': 24})
-	ax.set_ylim(0, max(table[column_label_y])*axis_scale)
-	ax.set_xlim(min(table[column_label_x])*axis_scale, max(table[column_label_x])*axis_scale)
+	ax.set_ylim(0, max(table[column_label_y]) * axis_scale)
+	ax.set_xlim(min(table[column_label_x]) * axis_scale, max(table[column_label_x]) * axis_scale)
 	ax.spines['right'].set_visible(False)
 	ax.spines['top'].set_visible(False)
-	#red_patch = mpatches.Patch(color = 'red', label = 'The red data')
-	#plt.legend(handles = [red_patch])
+	# red_patch = mpatches.Patch(color = 'red', label = 'The red data')
+	# plt.legend(handles = [red_patch])
 
 	handles = [mpatches.Patch(color = color, label = label) for label, color in palette.items()]
 
@@ -144,7 +145,6 @@ def create_parser(args: List[str] = None) -> argparse.Namespace:
 def main(args):
 	table = pandas.read_csv(args.filename, sep = "\t")
 	table['-log10(pvalue)'] = table['padj'].apply(lambda s: -math.log10(s))
-	# table = table.merge(annotation_table, how = "left", left_on = 'locusTag', right_on = 'locusTag')
 	volcanoplot(table)
 
 
