@@ -4,6 +4,7 @@ Need to load miniconda-3
 ``` module load miniconda/miniconda-3 ```
 
 This is the general folder structure for this project:
+```
 .project_folder
 |--- data
 |---|--- reference
@@ -12,7 +13,7 @@ This is the general folder structure for this project:
 |---|--- results_deseq
 |--- figures
 |--- scripts
-
+```
 
 
 # Run Kallisto to get read counts for every sample.
