@@ -13,10 +13,6 @@ import argparse
 import matplotlib.patches as mpatches
 
 
-def assign_colors():
-	pass
-
-
 def generate_palette(table: pandas.DataFrame) -> Tuple[pandas.Series, Dict[str, str]]:
 	strains = table['strain'].unique()
 	not_significant_color = "#777777"
